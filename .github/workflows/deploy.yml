@@ -1,4 +1,4 @@
-name: Deploy SvelteKit Docker Image
+name: Deploy Python Docker Image
 
 on:
   push:
