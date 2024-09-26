@@ -1,5 +1,5 @@
 Instalacja zależności i uruchamianie aplikacji:
 ```
-/link/do/pythona/ -m pip install -r requirements.txt
-uvicorn main:app --reload
+/venv/bin/python3 -m pip install -r requirements.txt
+/venv/bin/uvicorn main:app --reload
 ```
