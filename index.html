@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - Czat</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        .textbox{
+            width: 100%;
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: flex-end;
+            border: 5px solid black;
+        }
+        input{
+            width: 100%;
+            padding: 20px;
+        }
+        button{
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test - Czat</h1>
+    <div class="textbox"></div>
+    <input type="text">
+    <button onclick="test()">Wyślij</button>
+</body>
+</html>
+
+<script>
+    const input = document.querySelector("input")
+    input.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            test();
+        }
+    });
+    function test(){
+        const message = input.value;
+        input.value = "";
+
+        textbox = document.querySelector(".textbox");
+        textbox.innerHTML += `<p>${message}</p>`
+
+        fetch("http://127.0.0.1:8000/bartek", { //Tutaj podmień adres API na ten serwerowy
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ content: message })
+        })
+        .then(response => response.json())
+        .then(data => {
+            textbox.innerHTML += `<b>${data.content}</b>`
+            console.log(data);
+        })
+        .catch((error) => {
+            console.error("Error:", error);
+        });
+    }
+</script>

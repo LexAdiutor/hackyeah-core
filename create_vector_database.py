@@ -6,6 +6,7 @@ from langchain_community.vectorstores import FAISS
 
 urls = [
     "https://www.podatki.gov.pl/pcc-sd/",
+    "https://www.podatki.gov.pl/pcc-sd/rozliczenie-podatku-pcc-od-innych-czynnosci/",
     "https://www.podatki.gov.pl/pcc-sd/rozliczenie-podatku-pcc-od-kupna-samochodu/",
     "https://www.podatki.gov.pl/pcc-sd/rozliczenie-podatku-pcc-od-pozyczki/"
 ]
