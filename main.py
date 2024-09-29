@@ -569,6 +569,7 @@ def send_msg(msg: MsgRequest):
     
     res = json.loads(json.dumps(graph.invoke({"query": msg.message, "fields": []})))
     res["finished"] = True
+    res["final_message"] = "Przeanalizowałem Pana/Pani pytanie. Następujące pola zostały wypełnione: " + ", ".join(res["fields"])
     return res
   
   finally:
