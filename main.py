@@ -43,8 +43,7 @@ def read_root():
     lock.release()  # Zwalniamy blokadę na koniec operacji
 
 import json
-from utils import graph
-
+from utils import graph, info
 
 class MsgRequest(BaseModel):
     msg_id: str
@@ -54,7 +53,7 @@ class MsgRequest(BaseModel):
 @app.post("/sendMichalMsg")
 def send_msg(msg: MsgRequest):
   if not lock.acquire(blocking=False):
-    raise HTTPException(status_code=503, detail="API is busy. Please try again later.")
+    return {"info": info}
   
   try:
     if msg.isFirstFormMessage:
@@ -63,6 +62,7 @@ def send_msg(msg: MsgRequest):
       return json.loads(brbr.content)
     
     res = json.loads(json.dumps(graph.invoke(msg.message)))
+    return res
   
   finally:
     lock.release()  # Zwalniamy blokadę na koniec operacji
