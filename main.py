@@ -31,7 +31,6 @@ class GraphState(TypedDict):
     documents : List[str] # List of retrieved documents
     explanation: str
     
-    
 from langchain.schema import Document
 from langgraph.graph import END
 import json
@@ -85,7 +84,9 @@ def shorten_description(state):
   return {"short_description": v}
 
 def check_values(state):
-  desc_system_prompt = """Jesteś ekspertem od decydowania, czy pytanie użytkownika zawiera wszystkie kluczowe informacje. Pytanie zawiera wszystkie kluczowe informacje, jeżeli opisuje przedmiot umowy i ceny/wartości dla każdego z elementów. Powinieneś poinformować użytkownika, że wszysktie informacje musi napisać ponownie, żeby zachować spójność.
+  desc_system_prompt = """Jesteś ekspertem od decydowania, czy pytanie użytkownika zawiera wszystkie kluczowe informacje. Pytanie zawiera wszystkie kluczowe informacje, jeżeli opisuje przedmiot umowy i ceny/wartości dla każdego z elementów.
+  
+  Jeśli umowa dotyczy sprzedaży, a użytkownik poda tylko wartość zakupu, dopytaj o wartość rynkową.
 
   Twoim zadaniem jest zwrócić obiekt json z kluczami "explanation" oraz "is_compleet". Explenation ma zawierać bardzo uprzejme uzasadnienie decyzji pisane tak jak do użytkownika, z prośbą o dodanie informacji lub informacją, że wszystko jest dobrze. Is compleet to true jeśli prompt jest kompletny lub false, jeśli nie jest.
 
