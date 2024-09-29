@@ -93,7 +93,7 @@ def check_values(state):
   Przykłady:
 
   PYTANIE: Kupiłem samochód, jaki podatek powinienem zapłacić?
-  ODPOWIEDŹ: {"explanation": "Szanowny Panie, proszę o doprecyzowanie, jaka była cena samochodu?", "is_compleet": false}
+  ODPOWIEDŹ: {"explanation": "Szanowny Panie/Szanowna Pani, proszę o doprecyzowanie, jaka była cena samochodu?", "is_compleet": false}
 
   PYTANIE: Wczoraj kupiłem na giełdzie samochodowej Fiata 126p rok prod. 1975, kolor zielony. Przejechane ma 1000000 km, idzie jak przecinak, nic nie stuka, nic nie puka, dosłownie igła. Zapłaciłem za niego 1000 zł ale jego wartość jest wyższa o 2000 zł i co mam z tym zrobić ?
   ODPOWIEDŹ: {"explanation": "Dziękuję, informacje są kompletne", "is_compleet": true}
