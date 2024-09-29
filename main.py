@@ -24,6 +24,10 @@ Kroki do określenia, czy wiadomość użytkownika dotyczy podatku PCC: 1. Spraw
 
 from pydantic import BaseModel
 
+from utils import graph
+
+MEMORY = {}
+
 @app.get("/")
 def read_root():
   # Jeśli blokada jest zajęta, zwracamy odpowiedni błąd
@@ -39,10 +43,13 @@ def read_root():
     lock.release()  # Zwalniamy blokadę na koniec operacji
 
 import json
+from utils import graph
+
 
 class MsgRequest(BaseModel):
     msg_id: str
     message: str
+    isFirstFormMessage: bool
 
 @app.post("/sendMichalMsg")
 def send_msg(msg: MsgRequest):
@@ -50,9 +57,12 @@ def send_msg(msg: MsgRequest):
     raise HTTPException(status_code=503, detail="API is busy. Please try again later.")
   
   try:
-    brbr = llm_json_mode.invoke([SystemMessage(content=system_prompt)] + [HumanMessage(content="PYTANIE UŻYTKOWNIKA: " + msg.message + "\nJSON:")])
-    print(brbr.content)
-    return json.loads(brbr.content)
+    if msg.isFirstFormMessage:
+      MEMORY[msg.msg_id] = []
+      brbr = llm_json_mode.invoke([SystemMessage(content=system_prompt)] + [HumanMessage(content="PYTANIE UŻYTKOWNIKA: " + msg.message + "\nJSON:")])
+      return json.loads(brbr.content)
+    
+    res = json.loads(json.dumps(graph.invoke(msg.message)))
   
   finally:
     lock.release()  # Zwalniamy blokadę na koniec operacji
