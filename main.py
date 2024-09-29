@@ -134,7 +134,7 @@ def read_root():
     lock.release()  # Zwalniamy blokadę na koniec operacji
 
 import json
-from utils import graph, info
+from utils import info
 
 class MsgRequest(BaseModel):
     msg_id: str
