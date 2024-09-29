@@ -447,17 +447,7 @@ workflow.add_node("hipoteka", hipoteka)
 workflow.add_node("hipoteka_nieznana", hipoteka_nieznana)
 workflow.add_node("hipoteka_znana", hipoteka_znana)
 
-workflow.set_entry_point("check_values")
-
-workflow.add_conditional_edges(
-  "check_values",
-  check_values_decide,
-  {
-    "CON": "shorten_description",
-    "END": END,
-  },
-)
-
+workflow.set_entry_point("shorten_description")
 
 workflow.add_edge("shorten_description", "get_value")
 workflow.add_edge("shorten_description", "get_value")
