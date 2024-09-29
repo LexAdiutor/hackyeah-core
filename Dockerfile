@@ -5,9 +5,7 @@ WORKDIR /app
 RUN python3 -m venv /opt/venv
 
 COPY . .
-RUN . /opt/venv/bin/activate && pip install -r requirements.txt
-
-RUN . /opt/venv/bin/activate && ollama pull SpeakLeash/bielik-11b-v2.2-instruct-imatrix:Q8_0
+RUN . /opt/venv/bin/activate && pip install -r requirements.txt && deactivate && . /opt/venv/bin/activate && ollama pull SpeakLeash/bielik-11b-v2.2-instruct-imatrix:Q8_0
 
 EXPOSE 8000
 
