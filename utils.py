@@ -1,6 +1,5 @@
 ### LLM
 from langchain_ollama import ChatOllama
-from langchain_huggingface.embeddings import HuggingFaceEmbeddings
 
 local_llm = 'SpeakLeash/bielik-11b-v2.2-instruct-imatrix:Q8_0'
 llm_json_mode = ChatOllama(model=local_llm, temperature=0, format='json')
