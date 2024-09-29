@@ -1,0 +1,44 @@
+%%{init: {'flowchart': {'curve': 'linear'}}}%%
+graph TD;
+	__start__([<p>__start__</p>]):::first
+	shorten_description(shorten_description)
+	get_value(get_value)
+	sprzedaz(sprzedaz)
+	sprzedaz_many(sprzedaz_many)
+	sprzedaz_only_one(sprzedaz_only_one)
+	zamiana(zamiana)
+	check_values(check_values)
+	darowizna_dlug(darowizna_dlug)
+	uzytkowanie(uzytkowanie)
+	pozyczka_fake(pozyczka_fake)
+	pozyczka(pozyczka)
+	hipoteka(hipoteka)
+	hipoteka_nieznana(hipoteka_nieznana)
+	hipoteka_znana(hipoteka_znana)
+	__end__([<p>__end__</p>]):::last
+	__start__ --> check_values;
+	darowizna_dlug --> __end__;
+	hipoteka_nieznana --> __end__;
+	hipoteka_znana --> __end__;
+	pozyczka --> __end__;
+	shorten_description --> get_value;
+	sprzedaz_many --> __end__;
+	sprzedaz_only_one --> __end__;
+	uzytkowanie --> __end__;
+	zamiana --> __end__;
+	check_values -. &nbsp;CON&nbsp; .-> shorten_description;
+	check_values -. &nbsp;END&nbsp; .-> __end__;
+	get_value -. &nbsp;SPR&nbsp; .-> sprzedaz;
+	get_value -. &nbsp;ZAM&nbsp; .-> zamiana;
+	get_value -. &nbsp;POZ&nbsp; .-> pozyczka_fake;
+	get_value -. &nbsp;DAR&nbsp; .-> darowizna_dlug;
+	get_value -. &nbsp;UZY&nbsp; .-> uzytkowanie;
+	sprzedaz -. &nbsp;one&nbsp; .-> sprzedaz_only_one;
+	sprzedaz -. &nbsp;many&nbsp; .-> sprzedaz_many;
+	pozyczka_fake -.-> hipoteka;
+	pozyczka_fake -.-> pozyczka;
+	hipoteka -.-> hipoteka_znana;
+	hipoteka -.-> hipoteka_nieznana;
+	classDef default fill:#f2f0ff,line-height:1.2
+	classDef first fill-opacity:0
+	classDef last fill:#bfb6fc
