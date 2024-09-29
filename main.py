@@ -79,7 +79,7 @@ def shorten_description(state):
   
   v = json.loads(test_web_search.content)["short_description"]
   
-  state["fields"].append({"name": "P_24", "value": v})
+  state["fields"].append({"name": "P_23", "value": v})
   
   return {"short_description": v}
 
@@ -213,8 +213,8 @@ def sprzedaz_decyzja(state):
   return "many"
 
 def sprzedaz_many(state):
-  state["fields"].append({"name": "P_27", "value": state["tax_value"]})
-  state["fields"].append({"name": "P_28", "value": state["tax_value"] * 0.02})
+  state["fields"].append({"name": "P_26", "value": state["tax_value"]})
+  state["fields"].append({"name": "P_27", "value": state["tax_value"] * 0.02})
 
   return {"tax_rate": 0.02}
 
@@ -250,12 +250,12 @@ def sprzedaz_only_one(state):
   v = json.loads(test_web_search.content)["tax_value"]
   
   if v == 0.01:
-    state["fields"].append({"name": "P_25", "value": state["tax_value"]})
-    state["fields"].append({"name": "P_26", "value": state["tax_value"] * 0.01})
+    state["fields"].append({"name": "P_24", "value": state["tax_value"]})
+    state["fields"].append({"name": "P_25", "value": state["tax_value"] * 0.01})
 
   if v == 0.02:
-    state["fields"].append({"name": "P_27", "value": state["tax_value"]})
-    state["fields"].append({"name": "P_28", "value": state["tax_value"] * 0.02})
+    state["fields"].append({"name": "P_26", "value": state["tax_value"]})
+    state["fields"].append({"name": "P_27", "value": state["tax_value"] * 0.02})
 
   return {"tax_rate": json.loads(test_web_search.content)["tax_value"]}
 
@@ -281,23 +281,23 @@ def zamiana(state):
   )])
 
   v = json.loads(test_web_search.content)["tax_value"]
-  state["fields"].append({"name": "P_29", "value": state["tax_value"]})
-  state["fields"].append({"name": "P_30", "value": v})
-  state["fields"].append({"name": "P_31", "value": state["tax_value"] * v})
+  state["fields"].append({"name": "P_28", "value": state["tax_value"]})
+  state["fields"].append({"name": "P_29", "value": v})
+  state["fields"].append({"name": "P_30", "value": state["tax_value"] * v})
   
   return {"tax_rate": v}
 
 def darowizna_dlug(state):
-  state["fields"].append({"name": "P_35", "value": state["tax_value"]})
-  state["fields"].append({"name": "P_36", "value": 0.02})
-  state["fields"].append({"name": "P_37", "value": state["tax_value"] * 0.02})
+  state["fields"].append({"name": "P_34", "value": state["tax_value"]})
+  state["fields"].append({"name": "P_35", "value": 0.02})
+  state["fields"].append({"name": "P_36", "value": state["tax_value"] * 0.02})
   
   return {"tax_rate": 0.02}
 
 def uzytkowanie(state):
-  state["fields"].append({"name": "P_38", "value": state["tax_value"]})
-  state["fields"].append({"name": "P_39", "value": 0.02})
-  state["fields"].append({"name": "P_40", "value": state["tax_value"] * 0.02})
+  state["fields"].append({"name": "P_37", "value": state["tax_value"]})
+  state["fields"].append({"name": "P_38", "value": 0.02})
+  state["fields"].append({"name": "P_39", "value": state["tax_value"] * 0.02})
   return {"tax_rate": 0.02}
 
 def pozyczka_fake(state):
@@ -338,8 +338,8 @@ def pozyczka_fake_decyzja(state):
   return "pozyczka"
   
 def pozyczka(state):
-  state["fields"].append({"name": "P_32", "value": state["tax_value"]})
-  state["fields"].append({"name": "P_33", "value": 0.005})
+  state["fields"].append({"name": "P_31", "value": state["tax_value"]})
+  state["fields"].append({"name": "P_32", "value": 0.005})
   state["fields"].append({"name": "P_33", "value": 0.005 * state["tax_value"]})
   return {"tax_rate": 0.005}
 
@@ -365,13 +365,13 @@ def hipoteka_decyzja(state):
   return "hipoteka_nieznana"
   
 def hipoteka_nieznana(state):
-  state["fields"].append({"name": "P_43", "value": 19})
+  state["fields"].append({"name": "P_42", "value": 19})
   state["tax_value"] = 1
   return {"tax_rate": 19}
   
 def hipoteka_znana(state):
-  state["fields"].append({"name": "P_41", "value": state["tax_value"]})
-  state["fields"].append({"name": "P_42", "value": state["tax_value"] * 0.01})
+  state["fields"].append({"name": "P_40", "value": state["tax_value"]})
+  state["fields"].append({"name": "P_41", "value": state["tax_value"] * 0.01})
   return {"tax_rate": 0.001}
 
 import operator
