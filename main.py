@@ -44,7 +44,8 @@ class GraphState(TypedDict):
 from langchain.schema import Document
 from langgraph.graph import END
 from langchain_core.messages import HumanMessage, SystemMessage
-from langchain_core.messages import HumanMessage, SystemMessage
+from transformers import AutoModelForSequenceClassification, AutoTokenizer
+import torch
 
 info = None
 
@@ -634,6 +635,41 @@ class GraphState2(TypedDict):
 
 
 #Graph nodes (actions functions)
+def rerank(query):
+    import os
+    os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
+
+    embeddings2 = NomicEmbeddings(model="nomic-embed-text-v1.5", inference_mode="local")
+
+    vectorstore2 = FAISS.load_local("my_faiss_store", embeddings=embeddings2, allow_dangerous_deserialization=True)
+
+    results = vectorstore2.similarity_search(query, k=50)
+
+    chunks = [result.page_content for result in results]
+
+    print("Started reranking...")
+
+    model_name = "cross-encoder/ms-marco-MiniLM-L-6-v2" 
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    model = AutoModelForSequenceClassification.from_pretrained(model_name)
+
+    def rerank_chunks(query, chunks):
+        inputs = [query + " [SEP] " + chunk for chunk in chunks]
+        tokenized_inputs = tokenizer(inputs, padding=True, truncation=True, return_tensors="pt")
+        
+        with torch.no_grad():
+            outputs = model(**tokenized_inputs)
+            scores = outputs.logits.squeeze().cpu().tolist() 
+
+        reranked_chunks = [chunk for _, chunk in sorted(zip(scores, chunks), reverse=True)]
+        return reranked_chunks
+
+    reranked_chunks = rerank_chunks(query, chunks)
+
+    for i, chunk in enumerate(reranked_chunks[:10]):
+        print(f"Rank {i+1}: {chunk}")
+
+    return reranked_chunks[:6]
 def retrieve2(state):
     """
     Retrieve documents from vectorstore
@@ -645,10 +681,7 @@ def retrieve2(state):
         state (dict): New key added to state, documents, that contains retrieved documents
     """
     print("---RETRIEVE---")
-    question = state["question"]
-
-    # Write retrieved documents to documents key in state
-    documents = retriever2.invoke("zapytanie: " + question)
+    documents = rerank(state["question"])
     return {"documents": documents}
 
 def generate2(state):
@@ -700,7 +733,7 @@ def grade_documents2(state):
     irreleavnt = 0
 
     for d in documents:
-        doc_grader_prompt_formatted = doc_grader_prompt2.format(document=d.page_content, history=history, question=question)
+        doc_grader_prompt_formatted = doc_grader_prompt2.format(document=d, history=history, question=question)
         result = llm_json_mode2.invoke([SystemMessage(content=doc_grader_instructions2)] + [HumanMessage(content=doc_grader_prompt_formatted)])
         grade = json.loads(result.content)['binary_score']
         # Document relevant
