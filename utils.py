@@ -384,7 +384,7 @@ class GraphState(TypedDict):
     short_description: str
 
 from langgraph.graph import StateGraph
-from IPython.display import Image, display
+# from IPython.display import Image, display
 
 workflow = StateGraph(GraphState)
 
