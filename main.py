@@ -839,7 +839,7 @@ workflow2.add_conditional_edges(
 graph2 = workflow2.compile()
 _history = []
 
-def ask_question(question2, max_retries=3):
+def ask_question(question2, max_retries=1):
     global _history
     global graph2
     
@@ -856,10 +856,6 @@ def ask_question(question2, max_retries=3):
     
     if(len(_history) > 6):
         _history = _history[-4:]
-
-    # print("//HISTORY//")
-    # print(_history)
-    # print("\n\n")
 
     return model_output
 

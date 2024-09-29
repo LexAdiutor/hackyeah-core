@@ -8,7 +8,14 @@ urls = [
     "https://www.podatki.gov.pl/pcc-sd/",
     "https://www.podatki.gov.pl/pcc-sd/rozliczenie-podatku-pcc-od-innych-czynnosci/",
     "https://www.podatki.gov.pl/pcc-sd/rozliczenie-podatku-pcc-od-kupna-samochodu/",
-    "https://www.podatki.gov.pl/pcc-sd/rozliczenie-podatku-pcc-od-pozyczki/"
+    "https://www.podatki.gov.pl/pcc-sd/rozliczenie-podatku-pcc-od-pozyczki/",
+    "https://poradnikprzedsiebiorcy.pl/-co-to-jest-podatek-vat-zasady-jego-dzialania",
+    "https://www.pit.pl/pit/",
+    "https://www.biznes.gov.pl/pl/portal/00251",
+    "https://www.biznes.gov.pl/pl/portal/ou893",
+    "https://poradnikprzedsiebiorcy.pl/-kiedy-wystepuje-koniecznosc-zaplaty-pcc",
+    "https://allekurier.pl/blog/co-to-jest-clo-i-kiedy-sie-je-placi",
+    "https://www.ifirma.pl/blog/podatek-od-czynnosci-cywilnoprawnych-kompendium-wiedzy-w-zakresie-podatku-pcc/"
 ]
 
 # Load documents
