@@ -141,10 +141,9 @@ def get_type(state):
   # System 
   type_system_prompt = """Jesteś ekspertem w przypisywaniu rodzaju czynności prawnej do jednej z definicji
 
-  Jako wejście przyjmij pytanie lub sytuację podatnika. Jako odpowiedź zwróć obiekt json {'code': ...} gdzie ... zastąp faktycznym kodem definicji.
+  Jako wejście przyjmij pytanie lub sytuację podatnika. Jako odpowiedź zwróć obiekt json {'code': kod_definicji} gdzie kod_definicji zastąp faktycznym kodem definicji.
 
-  Definicje:
-
+  DEFINICJE:
   Nazwa definicji: Umowa sprzedaży
   Kod definicji: SPR
   Definicja: Umowa sprzedaży to umowa między dwiema stronami, w której sprzedawca zgadza się sprzedać rzecz lub prawo majątkowe, a kupujący zobowiązuje się zapłacić za nie ustaloną cenę.
@@ -164,16 +163,17 @@ def get_type(state):
   Nazwa definicji: Ustanowienie odpłatnego użytkowania, w tym użytkowania nieprawidłowego
   Kod definicji: UZY
   Definicja: Użytkowanie to umowa, w której jedna strona (użytkownik) zyskuje prawo do korzystania z cudzej rzeczy lub nieruchomości za wynagrodzeniem, jednocześnie zobowiązując się do przestrzegania ustalonych warunków. W przypadku użytkowania nieprawidłowego, gdy obejmuje ono pieniądze lub inne przedmioty oznaczone tylko co do gatunku, użytkownik staje się ich właścicielem w momencie ich wydania. Po zakończeniu użytkowania jest zobowiązany do zwrotu przedmiotów według przepisów dotyczących zwrotu pożyczki. Niezastosowanie się do warunków umowy może skutkować koniecznością zapłaty odszkodowania lub zwrotu przedmiotu w stanie niezgodnym z umową.
+  
+  PRZYKŁADY:
+  PYTANIE: Postanowiłem wczoraj pożyczyć 5,000 zł od Piotra.
+  PRZEKSZTAŁCENIE: {"code": "POZ"}
+
+  PYTANIE: Wczoraj mój przyjaciel przekazał mi swoje mieszkanie warte 100000 PLN, a w zamian przejęłam jego kredyt hipoteczny, który jeszcze spłaca w wysokości 50000
+  PRZEKSZTAŁCENIE: {"code": "DAR"}
   """
 
   def get_type_user_prompt(query):
     user_prompt_template = """
-    PYTANIE: Postanowiłem wczoraj pożyczyć 5,000 zł od Piotra.
-    PRZEKSZTAŁCENIE: {"code": "POZ"}
-
-    PYTANIE: Wczoraj mój przyjaciel przekazał mi swoje mieszkanie warte 100000 PLN, a w zamian przejęłam jego kredyt hipoteczny, który jeszcze spłaca w wysokości 50000
-    PRZEKSZTAŁCENIE: {"code": "DAR"}
-
     PYTANIE: \"""" + query + "\"\nPZEKSZTAŁCENIE: "
     
     return user_prompt_template
@@ -183,6 +183,7 @@ def get_type(state):
   )])
 
   return json.loads(test_web_search.content)['code']
+
 
 def sprzedaz(state):
   global info
