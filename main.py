@@ -437,7 +437,7 @@ workflow.add_node("sprzedaz_many", sprzedaz_many)
 workflow.add_node("sprzedaz_only_one", sprzedaz_only_one)
 
 workflow.add_node("zamiana", zamiana)
-workflow.add_node("check_values", check_values)
+# workflow.add_node("check_values", check_values)
 workflow.add_node("darowizna_dlug", darowizna_dlug)
 workflow.add_node("uzytkowanie", uzytkowanie)
 
