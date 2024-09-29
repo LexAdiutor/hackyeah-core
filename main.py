@@ -115,7 +115,7 @@ Kroki do określenia, czy wiadomość użytkownika dotyczy podatku PCC: 1. Spraw
 
 from pydantic import BaseModel
 
-from utils import darowizna_dlug, get_type, get_value, graph, hipoteka, hipoteka_decyzja, hipoteka_nieznana, hipoteka_znana, pozyczka, pozyczka_fake, pozyczka_fake_decyzja, shorten_description, sprzedaz, sprzedaz_decyzja, sprzedaz_many, sprzedaz_only_one, uzytkowanie, zamiana
+from utils import darowizna_dlug, get_type, get_value, hipoteka, hipoteka_decyzja, hipoteka_nieznana, hipoteka_znana, pozyczka, pozyczka_fake, pozyczka_fake_decyzja, shorten_description, sprzedaz, sprzedaz_decyzja, sprzedaz_many, sprzedaz_only_one, uzytkowanie, zamiana
 
 MEMORY = {}
 
