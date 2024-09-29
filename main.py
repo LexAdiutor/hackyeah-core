@@ -1,9 +1,100 @@
+from tkinter import END
+from typing import Dict, List, TypedDict
 from fastapi import FastAPI, HTTPException
 import time
 from threading import Lock
 
 ### LLM
 from langchain_ollama import ChatOllama
+
+class GraphState(TypedDict):
+    """
+    Graph state is a dictionary that contains information we want to propagate to, and modify in, each graph node.
+    """
+    tax_rate : float # User question
+    fields: List[Dict[str, str]]
+    tax_value: float
+    is_known: bool
+    query: str
+    is_mortgage: bool
+    is_only_one: bool
+    type: str
+    short_description: str
+
+from langgraph.graph import StateGraph
+
+workflow = StateGraph(GraphState)
+
+# Define the nodes
+workflow.add_node("shorten_description", shorten_description)
+workflow.add_node("get_value", get_value)
+
+workflow.add_node("sprzedaz", sprzedaz)
+workflow.add_node("sprzedaz_many", sprzedaz_many)
+workflow.add_node("sprzedaz_only_one", sprzedaz_only_one)
+
+workflow.add_node("zamiana", zamiana)
+workflow.add_node("darowizna_dlug", darowizna_dlug)
+workflow.add_node("uzytkowanie", uzytkowanie)
+
+workflow.add_node("pozyczka_fake", pozyczka_fake)
+workflow.add_node("pozyczka", pozyczka)
+workflow.add_node("hipoteka", hipoteka)
+workflow.add_node("hipoteka_nieznana", hipoteka_nieznana)
+workflow.add_node("hipoteka_znana", hipoteka_znana)
+
+workflow.set_entry_point("shorten_description")
+workflow.add_edge("shorten_description", "get_value")
+workflow.add_edge("shorten_description", "get_value")
+
+workflow.add_conditional_edges(
+    "get_value",
+    get_type,
+    {
+        "SPR": "sprzedaz",
+        "ZAM": "zamiana",
+        "POZ": "pozyczka_fake",
+        "DAR": "darowizna_dlug",
+        "UZY": "uzytkowanie",
+    },
+)
+
+workflow.add_conditional_edges(
+    "sprzedaz",
+    sprzedaz_decyzja,
+    {
+        "one": "sprzedaz_only_one",
+        "many": "sprzedaz_many",
+    },
+)
+
+
+workflow.add_conditional_edges(
+    "pozyczka_fake",
+    pozyczka_fake_decyzja,
+    {
+        "hipoteka": "hipoteka",
+        "pozyczka": "pozyczka",
+    },
+)
+
+workflow.add_conditional_edges(
+    "hipoteka",
+    hipoteka_decyzja,
+    {
+        "hipoteka_znana": "hipoteka_znana",
+        "hipoteka_nieznana": "hipoteka_nieznana",
+    },
+)
+
+workflow.add_edge("zamiana", END)
+workflow.add_edge("sprzedaz_only_one", END)
+workflow.add_edge("sprzedaz_many", END)
+workflow.add_edge("pozyczka", END)
+workflow.add_edge("hipoteka_znana", END)
+workflow.add_edge("hipoteka_nieznana", END)
+workflow.add_edge("darowizna_dlug", END)
+workflow.add_edge("uzytkowanie", END)
 
 from langchain_core.messages import HumanMessage, SystemMessage
 
@@ -24,7 +115,7 @@ Kroki do określenia, czy wiadomość użytkownika dotyczy podatku PCC: 1. Spraw
 
 from pydantic import BaseModel
 
-from utils import graph
+from utils import darowizna_dlug, get_type, get_value, graph, hipoteka, hipoteka_decyzja, hipoteka_nieznana, hipoteka_znana, pozyczka, pozyczka_fake, pozyczka_fake_decyzja, shorten_description, sprzedaz, sprzedaz_decyzja, sprzedaz_many, sprzedaz_only_one, uzytkowanie, zamiana
 
 MEMORY = {}
 
