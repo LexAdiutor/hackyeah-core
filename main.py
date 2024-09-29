@@ -446,7 +446,7 @@ workflow.add_node("sprzedaz_many", sprzedaz_many)
 workflow.add_node("sprzedaz_only_one", sprzedaz_only_one)
 
 workflow.add_node("zamiana", zamiana)
-workflow.add_node("check_values", check_values)
+# workflow.add_node("check_values", check_values)
 workflow.add_node("darowizna_dlug", darowizna_dlug)
 workflow.add_node("uzytkowanie", uzytkowanie)
 
@@ -456,17 +456,7 @@ workflow.add_node("hipoteka", hipoteka)
 workflow.add_node("hipoteka_nieznana", hipoteka_nieznana)
 workflow.add_node("hipoteka_znana", hipoteka_znana)
 
-workflow.set_entry_point("check_values")
-
-workflow.add_conditional_edges(
-  "check_values",
-  check_values_decide,
-  {
-    "CON": "shorten_description",
-    "END": END,
-  },
-)
-
+workflow.set_entry_point("shorten_description")
 
 workflow.add_edge("shorten_description", "get_value")
 workflow.add_edge("shorten_description", "get_value")
@@ -585,7 +575,7 @@ def send_msg(msg: MsgRequest):
     res = json.loads(json.dumps(graph.invoke({"query": msg.message, "fields": []})))
     res["finished"] = True
     
-    res["final_message"] = "Przeanalizowałem Pana/Pani pytanie. Następujące pola zostały wypełnione:\n" + "\n".join(list(map(lambda x: str(x[0]) + " - " + str(x[1]), res["fields"])))
+    res["final_message"] = "Przeanalizowałem Pana/Pani pytanie i wypełniłem pola formularza"
     return res
   
   finally:
