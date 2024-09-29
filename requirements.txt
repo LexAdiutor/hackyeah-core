@@ -5,3 +5,4 @@ langchain
 langchain_ollama
 pydantic
 langchain_ollama
+langgraph
