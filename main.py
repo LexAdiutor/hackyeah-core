@@ -523,6 +523,7 @@ def send_msg(msg: MsgRequest):
       return json.loads(brbr.content)
     
     res = json.loads(json.dumps(graph.invoke(msg.message)))
+    res["finished"] = True
     return res
   
   finally:
