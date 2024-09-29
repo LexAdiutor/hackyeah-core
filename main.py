@@ -29,6 +29,8 @@ class GraphState(TypedDict):
     answers : int # Number of answers generated
     loop_step: Annotated[int, operator.add] 
     documents : List[str] # List of retrieved documents
+    explanation: str
+    
     
 from langchain.schema import Document
 from langgraph.graph import END
@@ -52,9 +54,8 @@ def shorten_description(state):
   Jeśli podatnik opisuje KUPNO KILKU RZECZY albo SPRZEDAŻ KILKU RZECZY, czyli porozumienie między dwoma osobami, w którym jedna kupuje kilka rzeczy za pieniądze od drugiej, wtedy skonstruuj zwięzyły opis dla każdej z rzeczy i oddziel je przecinkiem.
 
   Zwróć json z kluczem "short_description" zawierający zwięzły opis.
-
   """
-
+  
   def get_short_desc_user_prompt(query):
     user_prompt_template = """
     PYTANIE: Wczoraj kupiłem na giełdzie samochodowej Fiata 126p rok prod. 1975, kolor zielony. Przejechane ma
@@ -82,6 +83,35 @@ def shorten_description(state):
   state["fields"].append({"name": "P_23", "value": v})
   
   return {"short_description": v}
+
+def check_values(state):
+  desc_system_prompt = """Jesteś ekspertem od decydowania, czy pytanie użytkownika zawiera wszystkie kluczowe informacje. Pytanie zawiera wszystkie kluczowe informacje, jeżeli opisuje przedmiot umowy i ceny/wartości dla każdego z elementów. Powinieneś poinformować użytkownika, że wszysktie informacje musi napisać ponownie, żeby zachować spójność.
+
+  Twoim zadaniem jest zwrócić obiekt json z kluczami "explanation" oraz "is_compleet". Explenation ma zawierać bardzo uprzejme uzasadnienie decyzji pisane tak jak do użytkownika, z prośbą o dodanie informacji lub informacją, że wszystko jest dobrze. Is compleet to true jeśli prompt jest kompletny lub false, jeśli nie jest.
+
+  Przykłady:
+
+  PYTANIE: Kupiłem samochód, jaki podatek powinienem zapłacić?
+  ODPOWIEDŹ: {"explanation": "Szanowny Panie, proszę o doprecyzowanie, jaka była cena samochodu?", "is_compleet": false}
+
+  PYTANIE: Wczoraj kupiłem na giełdzie samochodowej Fiata 126p rok prod. 1975, kolor zielony. Przejechane ma 1000000 km, idzie jak przecinak, nic nie stuka, nic nie puka, dosłownie igła. Zapłaciłem za niego 1000 zł ale jego wartość jest wyższa o 2000 zł i co mam z tym zrobić ?
+  ODPOWIEDŹ: {"explanation": "Dziękuję, informacje są kompletne", "is_compleet": true}
+  """
+  
+  # Test router
+  test_web_search = llm_json_mode.invoke([SystemMessage(content=desc_system_prompt)] + [HumanMessage(
+    content=state["query"],
+  )])
+
+
+  return {"is_compleet": json.loads(test_web_search.content)["is_compleet"], "explanation": json.loads(test_web_search.content)["explanation"] + " Proszę o ponowne wprowadzenie całego polecenia, wraz z uzupełnionymi danymi."}
+
+
+def check_values_decide(state):
+  if state["is_compleet"]:
+    return "CON"
+  return "END"
+
 
 def get_value(state):
   global info
@@ -388,6 +418,7 @@ class GraphState(TypedDict):
     fields: List[Dict[str, str]]
     tax_value: float
     is_known: bool
+    explanation: str
     query: str
     is_mortgage: bool
     is_only_one: bool
@@ -405,6 +436,7 @@ workflow.add_node("sprzedaz_many", sprzedaz_many)
 workflow.add_node("sprzedaz_only_one", sprzedaz_only_one)
 
 workflow.add_node("zamiana", zamiana)
+workflow.add_node("check_values", check_values)
 workflow.add_node("darowizna_dlug", darowizna_dlug)
 workflow.add_node("uzytkowanie", uzytkowanie)
 
@@ -414,7 +446,18 @@ workflow.add_node("hipoteka", hipoteka)
 workflow.add_node("hipoteka_nieznana", hipoteka_nieznana)
 workflow.add_node("hipoteka_znana", hipoteka_znana)
 
-workflow.set_entry_point("shorten_description")
+workflow.set_entry_point("check_values")
+
+workflow.add_conditional_edges(
+  "check_values",
+  check_values_decide,
+  {
+    "CON": "shorten_description",
+    "END": END,
+  },
+)
+
+
 workflow.add_edge("shorten_description", "get_value")
 workflow.add_edge("shorten_description", "get_value")
 
