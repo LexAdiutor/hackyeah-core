@@ -24,7 +24,7 @@ docs_list = [item for sublist in docs for item in sublist]
 
 # Split documents
 text_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
-    chunk_size=1000, chunk_overlap=200
+    chunk_size=200, chunk_overlap=40
 )
 
 doc_splits = text_splitter.split_documents(docs_list)

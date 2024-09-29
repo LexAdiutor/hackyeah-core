@@ -6,3 +6,7 @@ langchain_ollama
 pydantic
 langchain_ollama
 langgraph
+langchain_nomic
+langchain_community
+langchain_core
+torch
