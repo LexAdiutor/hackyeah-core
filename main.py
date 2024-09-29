@@ -869,10 +869,3 @@ class Message(BaseModel):
 @app.post("/bartek")
 def read_root(message:Message):
   return ask_question(message.content)
-
-@app.post("/clearBartek")
-def read_root():
-  global _history
-  
-  _history = []
-  return "Cleared"
