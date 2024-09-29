@@ -507,6 +507,10 @@ class MsgRequest(BaseModel):
     message: str
     isFirstFormMessage: bool
 
+@app.post("/getState")
+def send_msg():
+  return {"info": info}
+
 @app.post("/sendMichalMsg")
 def send_msg(msg: MsgRequest):
   if not lock.acquire(blocking=False):
