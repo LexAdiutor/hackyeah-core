@@ -522,7 +522,7 @@ def send_msg(msg: MsgRequest):
       brbr = llm_json_mode.invoke([SystemMessage(content=system_prompt)] + [HumanMessage(content="PYTANIE UŻYTKOWNIKA: " + msg.message + "\nJSON:")])
       return json.loads(brbr.content)
     
-    res = json.loads(json.dumps(graph.invoke(msg.message)))
+    res = json.loads(json.dumps(graph.invoke({"query": msg.message, "fields": []})))
     res["finished"] = True
     return res
   
