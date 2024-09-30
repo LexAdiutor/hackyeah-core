@@ -83,7 +83,7 @@ def shorten_description(state):
 
   # Test router
   test_web_search = llm_json_mode.invoke([SystemMessage(content=desc_system_prompt)] + [HumanMessage(
-    content=get_short_desc_user_prompt("2 dni temu kupiłem mieszkanie, wielkie, przejrzyste, 100m2. Jest przepiękne. Jaki podatek muszę zapłacić? A zapomniałem - do tego kupiłem farbę za 100 zł. Jaki podatek powinienem zapłacić?"),
+    content=get_short_desc_user_prompt(state["query"]),
   )])
   
   v = json.loads(test_web_search.content)["short_description"]
